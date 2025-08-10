@@ -696,6 +696,7 @@
                     <h2 class="slide-title" style="display: inline-block; ">Save the Date</h2>
                     <p class="slide-text">Don't forget to mark your calendar for this special day! 🎊</p>
                     <button class="rsvp-button" onclick="saveToGoogleCalendar()">Save the Date 📱</button>
+        <button class="rsvp-button" onclick="showEventDetails()" style="margin-top: 15px; background: linear-gradient(135deg, #4ecdc4, #44a08d);">📋 Copy Event Details</button>
                     <div style="font-size: 2rem; margin-top: 20px;">🎪🎠🎡</div>
                 </div>
             </div>
@@ -811,15 +812,39 @@
 
         // Function to save event to Google Calendar
         function saveToGoogleCalendar() {
-            const eventTitle = 'Anvisha\'s Birthday Celebration';
-            const eventDescription = 'Join us for Anvisha\'s 1st birthday celebration!';
-            const eventLocation = 'Society Dharamshala Pandu Nagar';
-            const eventDate = '20250821'; // August 21, 2025
-            const eventTime = '180000'; // 6:00 PM
-
-            const calendarUrl = `https://calendar.google.com/calendar/r/event?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${encodeURIComponent(eventDate)}T${encodeURIComponent(eventTime)}Z/${encodeURIComponent(eventDate)}T${encodeURIComponent(eventTime)}Z&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}`;
-
+            // Use the working Google Calendar URL provided by user
+            const calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Anvisha%27s+Birthday+Celebration&dates=20250821T123000Z/20250821T143000Z&details=Join+us+for+Anvisha%27s+1st+birthday+celebration!&location=Society+Dharamshala+Pandu+Nagar';
+            
+            // Open Google Calendar directly
             window.open(calendarUrl, '_blank');
+        }
+
+        // Function to open Google Calendar with proper format
+        function openGoogleCalendar() {
+            // Use the working Google Calendar URL provided by user
+            const calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Anvisha%27s+Birthday+Celebration&dates=20250821T123000Z/20250821T143000Z&details=Join+us+for+Anvisha%27s+1st+birthday+celebration!&location=Society+Dharamshala+Pandu+Nagar';
+            
+            // Open Google Calendar
+            window.open(calendarUrl, '_blank');
+        }
+
+        // Function to show event details for manual copying
+        function showEventDetails() {
+            const eventDetails = `Event: Anvisha's Birthday Celebration
+Date: August 21, 2025
+Time: 6:00 PM - 8:00 PM
+Location: Society Dharamshala Pandu Nagar
+Description: Join us for Anvisha's 1st birthday celebration! 🎉`;
+
+            // Create a temporary textarea to copy the text
+            const textarea = document.createElement('textarea');
+            textarea.value = eventDetails;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            alert('📋 Event details copied to clipboard!\n\nYou can now paste them into your calendar app or manually create the event. 🎉');
         }
 
         // Function to open Google Maps directions
