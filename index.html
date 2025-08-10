@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Invitation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+  body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .invitation-container {
+            background: #fff;
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 35px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            height: auto;
+            min-height: 550px;
+            position: relative;
+            animation: slideInUp 1s ease-out;
+            overflow: visible;
+        }
+
+        .slides-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 450px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            transition: all 0.8s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 450px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+            z-index: 2;
+        }
+
+        .slide.prev {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-100%);
+            z-index: 1;
+        }
+
+        .slide.next {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(100%);
+            z-index: 1;
+        }
+
+        .slide-content {
+            padding: 25px;
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .slide-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff4757, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(255, 71, 87, 0.4);
+        }
+
+        .slide-text {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            max-width: 90%;
+            font-weight: 500;
+        }
+
+        .slide-image {
+            width: 180px;
+            height: 180px;
+            margin: 30px 0;
+            animation: pulse 2s ease-in-out infinite;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        .animal-image {
+            position: absolute;
+            width: 120px;
+            height: auto;
+            z-index: 5;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animal-left {
+            left: -30px;
+            bottom: 20px;
+            animation-delay: 0s;
+        }
+
+        .animal-right {
+            right: -30px;
+            bottom: 20px;
+            animation-delay: 1.5s;
+        }
+
+        .animal-top {
+            right: -20px;
+            top: 20px;
+            animation-delay: 3s;
+            width: 80px;
+        }
+
+        .fairy-image {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            left: 20px;
+            top: 20px;
+            z-index: 6;
+            animation: fairyFloat 4s ease-in-out infinite;
+        }
+
+        .background-emoji {
+            position: absolute;
+            font-size: 2rem;
+            z-index: 1;
+            opacity: 0;
+            animation: emojiFloat 4s ease-in-out infinite;
+            animation-delay: var(--delay);
+            left: var(--x);
+            top: var(--y);
+            pointer-events: none;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transform: scale(0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(5deg); }
+            66% { transform: translateY(-8px) rotate(-3deg); }
+        }
+
+        @keyframes fairyFloat {
+            0%, 100% { transform: translateY(-50%) translateX(0px); }
+            50% { transform: translateY(-50%) translateX(-10px); }
+        }
+
+        @keyframes emojiFloat {
+            0% { 
+                transform: translateY(0px) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            15% { 
+                transform: translateY(-10px) rotate(5deg) scale(1);
+                opacity: 0.8;
+            }
+            30% { 
+                transform: translateY(-20px) rotate(0deg) scale(1.1);
+                opacity: 1;
+            }
+            45% { 
+                transform: translateY(-25px) rotate(-5deg) scale(1);
+                opacity: 0.8;
+            }
+            60% { 
+                transform: translateY(-15px) rotate(0deg) scale(0.9);
+                opacity: 0.6;
+            }
+            75% { 
+                transform: translateY(-5px) rotate(5deg) scale(0.7);
+                opacity: 0.3;
+            }
+            90% { 
+                transform: translateY(0px) rotate(0deg) scale(0.5);
+                opacity: 0.1;
+            }
+            100% { 
+                transform: translateY(0px) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        .navigation-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dot.active {
+            background: #ff6b6b;
+            border-color: #ff6b6b;
+            transform: scale(1.2);
+        }
+
+        .dot:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        .slide-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .slide-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .slide-nav.prev-btn {
+            left: 10px;
+        }
+
+        .slide-nav.next-btn {
+            right: 10px;
+        }
+
+        .music-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            color: #333;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: musicPulse 2s ease-in-out infinite;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .music-btn.playing {
+            background: linear-gradient(135deg, #4ecdc4, #ff6b6b);
+            animation: musicRotate 2s linear infinite;
+        }
+
+        .music-prompt {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: promptPulse 2s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .music-prompt.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes musicPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes musicRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes promptPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideInFromRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .invitation-container::before {
+            content: '';
+    position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            /* background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57); */
+            border-radius: 32px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        .birthday-icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #2c3e50;
+    margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #34495e;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .details {
+            background: linear-gradient(135deg, #e84393 0%, #fd79a8 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin: 15px 0;
+            box-shadow: 0 15px 40px rgba(232, 67, 147, 0.4);
+            width: 100%;
+            max-width: 95%;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 12px 0;
+            font-size: 1rem;
+            flex-wrap: wrap;
+            color: white;
+            font-weight: 600;
+        }
+
+        .detail-icon {
+            font-size: 1.4rem;
+            margin-right: 12px;
+            width: 25px;
+            flex-shrink: 0;
+        }
+
+        .rsvp-button {
+            background: linear-gradient(45deg, #d63031, #00b894);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(214, 48, 49, 0.4);
+            margin-top: 20px;
+        }
+
+        .rsvp-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .directions-button {
+            background: linear-gradient(45deg, #2ed573, #1e90ff);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(46, 213, 115, 0.4);
+            margin: 15px 0;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .directions-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(46, 213, 115, 0.6);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Music -->
+    <audio id="bgMusic" preload="auto">
+        <source src="happy-birthday.wav" type="audio/wav">
+    </audio>
+    
+    <!-- Music Control Button -->
+    <button id="musicBtn" class="music-btn" onclick="toggleMusic()">🎵</button>
+    
+    <!-- Music Start Prompt -->
+    <div id="musicPrompt" class="music-prompt">
+        <span>🎵 Click to start music!</span>
+    </div>
+    
+    <div class="invitation-container">
+        <!-- Background Emojis -->
+        <div class="background-emoji" style="--delay: 0s; --x: 10%; --y: 20%;">🎈</div>
+        <div class="background-emoji" style="--delay: 0.5s; --x: 85%; --y: 15%;">🎂</div>
+        <div class="background-emoji" style="--delay: 1s; --x: 15%; --y: 80%;">🎁</div>
+        <div class="background-emoji" style="--delay: 1.5s; --x: 80%; --y: 75%;">⭐</div>
+        <div class="background-emoji" style="--delay: 2s; --x: 50%; --y: 10%;">🎪</div>
+        <div class="background-emoji" style="--delay: 2.5s; --x: 20%; --y: 60%;">🎠</div>
+        <div class="background-emoji" style="--delay: 3s; --x: 75%; --y: 45%;">🎡</div>
+        <div class="background-emoji" style="--delay: 3.5s; --x: 90%; --y: 30%;">🎊</div>
+        
+        <!-- Animal Images -->
+        <img src="elepgant.png" alt="Elephant" class="animal-image animal-left">
+        <img src="graf.png" alt="Graf" class="animal-image animal-right">
+        <img src="bird.png" alt="Bird" class="animal-image animal-top">
+        <img src="baby-fairy.png" alt="Baby Fairy" class="fairy-image">
+
+        <div class="slides-container">
+            <!-- Slide 1: Welcome -->
+            <div class="slide active">
+                <div class="slide-content">
+                    <div class="birthday-icon">🎂</div>
+                    <h1 class="slide-title">Welcome to Anvisha's</h1>
+                    <h2 class="slide-title">Birthday Celebration! </h2>
+                    <h2 style="font-size: 2rem;">🎉</h2>
+                    <p class="slide-text">Join us for a magical day filled with joy, laughter, and wonderful memories! ✨</p>
+                    <div style="font-size: 2rem; margin-top: 20px;">🎈🎁🎊</div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Baby Photo -->
+            <div class="slide">
+                <div class="slide-content">
+                    <img src="Anvisha.jpg" alt="Baby Anvisha" class="slide-image">
+                    <h2 class="slide-title">Meet Anvisha! </h2>
+                    <h2 style="font-size: 2rem;">👶</h2>
+                    <p class="slide-text">Our little birthday star who's turning 1 year older! ⭐</p>
+                    <div style="font-size: 2rem; margin-top: 20px;">🌟💖🎀</div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Event Details -->
+            <div class="slide">
+                <div class="slide-content">
+                    <h2 class="slide-title">Event Details </h2>
+                        <span style="font-size: 2rem;">🎪</span>
+                    <div class="details">
+                        <div class="detail-item">
+                            <span class="detail-icon">📅</span>
+                            <span>Date: 21-Aug-2025</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🕐</span>
+                            <span>Time: 6:00 PM</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">📍</span>
+                            <span>Location: Society Dharamshala Pandu Nagar</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-icon">🎊</span>
+                            <span>Theme: Birthday Celebration</span>
+                        </div>
+                    </div>
+                    <button class="directions-button" onclick="openDirections()">📍 Get Directions</button>
+                    <div style="font-size: 2rem; margin-top: 20px;">🎭🎨🎯</div>
+                </div>
+            </div>
+
+            <!-- Slide 4: RSVP -->
+            <div class="slide">
+                <div class="slide-content">
+                    <h2 class="slide-title" style="display: inline-block; ">Save the Date</h2>
+                    <span style="font-size: 2rem; line-height: 1; vertical-align: middle;">📅</span>
+                    <p class="slide-text">Don't forget to mark your calendar for this special day! 🎊</p>
+                    <button class="rsvp-button" onclick="saveToGoogleCalendar()">Save the Date 📱</button>
+                    <div style="font-size: 2rem; margin-top: 20px;">🎪🎠🎡</div>
+                </div>
+            </div>
+        </div>
+        <!-- Navigation Arrows -->
+        <button class="slide-nav prev-btn" onclick="changeSlide(-1)">‹</button>
+        <button class="slide-nav next-btn" onclick="changeSlide(1)">›</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        let autoPlayInterval;
+
+        // Initialize slideshow
+        function initSlideshow() {
+            showSlide(currentSlide);
+            startAutoPlay();
+        }
+
+        // Show specific slide
+        function showSlide(n) {
+            // Remove active class from all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active', 'prev', 'next');
+            });
+
+            // Calculate slide positions
+            const prevSlide = (n - 1 + slides.length) % slides.length;
+            const nextSlide = (n + 1) % slides.length;
+
+            // Add appropriate classes
+            slides[n].classList.add('active');
+            slides[prevSlide].classList.add('prev');
+            slides[nextSlide].classList.add('next');
+
+            currentSlide = n;
+        }
+
+        // Change slide
+        function changeSlide(direction) {
+            const newSlide = (currentSlide + direction + slides.length) % slides.length;
+            showSlide(newSlide);
+            resetAutoPlay();
+        }
+
+        // Go to specific slide
+        function goToSlide(n) {
+            showSlide(n);
+            resetAutoPlay();
+        }
+
+        // Auto-play functionality
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                changeSlide(1);
+            }, 4000); // Change slide every 4 seconds
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initSlideshow();
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') changeSlide(-1);
+                if (e.key === 'ArrowRight') changeSlide(1);
+            });
+
+            // Touch/swipe navigation
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
+
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        changeSlide(1); // Swipe left - next slide
+                    } else {
+                        changeSlide(-1); // Swipe right - previous slide
+                    }
+                }
+            }
+        });
+
+        // Add click effect to RSVP button and Google Calendar integration
+        document.querySelector('.rsvp-button').addEventListener('click', function() {
+            // Add click effect
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'translateY(-3px)';
+            }, 150);
+            
+            // Call Google Calendar function
+            saveToGoogleCalendar();
+        });
+
+        // Function to save event to Google Calendar
+        function saveToGoogleCalendar() {
+            const eventTitle = 'Anvisha\'s Birthday Celebration';
+            const eventDescription = 'Join us for Anvisha\'s 1st birthday celebration!';
+            const eventLocation = 'Society Dharamshala Pandu Nagar';
+            const eventDate = '20250821'; // August 21, 2025
+            const eventTime = '180000'; // 6:00 PM
+
+            const calendarUrl = `https://calendar.google.com/calendar/r/event?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${encodeURIComponent(eventDate)}T${encodeURIComponent(eventTime)}Z/${encodeURIComponent(eventDate)}T${encodeURIComponent(eventTime)}Z&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}`;
+
+            window.open(calendarUrl, '_blank');
+        }
+
+        // Function to open Google Maps directions
+        function openDirections() {
+            const directionsUrl = 'https://maps.app.goo.gl/AAqEcMm8qz5iaiVz8';
+            window.open(directionsUrl, '_blank');
+        }
+
+        // Function to toggle background music
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const musicBtn = document.getElementById('musicBtn');
+            const musicPrompt = document.getElementById('musicPrompt');
+            
+            if (music.paused) {
+                music.play();
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '🔊';
+                musicPrompt.classList.add('hidden');
+            } else {
+                music.pause();
+                musicBtn.classList.remove('playing');
+                musicBtn.innerHTML = '🎵';
+                musicPrompt.classList.remove('hidden');
+            }
+        }
+
+        // Function to start music and hide prompt
+        function startMusic() {
+            const music = document.getElementById('bgMusic');
+            const musicBtn = document.getElementById('musicBtn');
+            const musicPrompt = document.getElementById('musicPrompt');
+            
+            music.play().then(function() {
+                musicStarted = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '🔊';
+                musicPrompt.classList.add('hidden');
+            }).catch(function(error) {
+                console.log('Music start failed:', error);
+            });
+        }
+
+        // Auto-play music when page loads
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                startMusic();
+            }, 100);
+        });
+
+        // Also try on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                startMusic();
+            }, 200);
+        });
+
+        // Try on any user interaction
+        document.addEventListener('click', function() {
+            if (!musicStarted) {
+                startMusic();
+            }
+        }, { once: true });
+
+        document.addEventListener('keydown', function() {
+            if (!musicStarted) {
+                startMusic();
+            }
+        }, { once: true });
+
+        document.addEventListener('touchstart', function() {
+            if (!musicStarted) {
+                startMusic();
+            }
+        }, { once: true });
+
+        // Fallback: play music when user first interacts with the page
+        let musicStarted = false;
+        document.addEventListener('click', function() {
+            if (!musicStarted) {
+                const music = document.getElementById('bgMusic');
+                music.play();
+                musicStarted = true;
+                document.getElementById('musicBtn').classList.add('playing');
+                document.getElementById('musicBtn').innerHTML = '🔊';
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
+
