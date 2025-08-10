@@ -1136,7 +1136,7 @@
                             <span>Theme: Birthday Celebration</span>
                         </div>
                     </div>
-                    <button class="directions-button" onclick="openDirections()">📍 Get Directions</button>
+                    <button class="directions-button">📍 Get Directions</button>
                     <div style="font-size: 2rem; margin-top: 20px;">🎭🎨🎯</div>
                 </div>
             </div>
@@ -1146,8 +1146,8 @@
                 <div class="slide-content">
                     <h2 class="slide-title" style="display: inline-block; ">Save the Date</h2>
                     <p class="slide-text">Don't forget to mark your calendar for this special day! 🎊</p>
-                    <button class="rsvp-button" onclick="saveToGoogleCalendar()">Save the Date 📱</button>
-        <button class="rsvp-button" onclick="showEventDetails()" style="margin-top: 15px; background: linear-gradient(135deg, #4ecdc4, #44a08d);">📋 Copy Event Details</button>
+                    <button class="rsvp-button">Save the Date 📱</button>
+        <button class="rsvp-button copy-details-btn" style="margin-top: 15px; background: linear-gradient(135deg, #4ecdc4, #44a08d);">📋 Copy Event Details</button>
                     <div style="font-size: 2rem; margin-top: 20px;">🎪🎠🎡</div>
                 </div>
             </div>
@@ -1268,6 +1268,12 @@
 
             // Add touch events to the main container
             invitationContainer.addEventListener('touchstart', (e) => {
+                // Don't pause slideshow if touching a button
+                if (e.target.closest('button') || e.target.closest('.rsvp-button') || e.target.closest('.directions-button') || e.target.closest('.pause-btn') || e.target.closest('.test-btn')) {
+                    console.log('Button touched - not pausing slideshow');
+                    return;
+                }
+                
                 e.preventDefault(); // Prevent default touch behavior
                 touchStartX = e.changedTouches[0].screenX;
                 touchStartTime = Date.now();
@@ -1288,6 +1294,11 @@
             }, { passive: false });
 
             invitationContainer.addEventListener('touchmove', (e) => {
+                // Don't handle touch move if touching a button
+                if (e.target.closest('button') || e.target.closest('.rsvp-button') || e.target.closest('.directions-button') || e.target.closest('.pause-btn') || e.target.closest('.test-btn')) {
+                    return;
+                }
+                
                 // If user moves finger, reset hold timer
                 if (touchHoldTimer) {
                     clearTimeout(touchHoldTimer);
@@ -1296,6 +1307,11 @@
             }, { passive: false });
 
             invitationContainer.addEventListener('touchend', (e) => {
+                // Don't handle touch end if touching a button
+                if (e.target.closest('button') || e.target.closest('.rsvp-button') || e.target.closest('.directions-button') || e.target.closest('.pause-btn') || e.target.closest('.test-btn')) {
+                    return;
+                }
+                
                 touchEndX = e.changedTouches[0].screenX;
                 
                 // Clear hold timer
@@ -1331,27 +1347,82 @@
 
         // Add click effects to buttons
         document.addEventListener('DOMContentLoaded', function() {
-            // RSVP button click effect
+            // RSVP button click effect and functionality
             const rsvpButton = document.querySelector('.rsvp-button');
             if (rsvpButton) {
-                rsvpButton.addEventListener('click', function() {
+                // Remove onclick attribute and add proper event listener
+                rsvpButton.removeAttribute('onclick');
+                rsvpButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
                     // Add click effect
                     this.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         this.style.transform = 'translateY(-3px)';
                     }, 150);
+                    
+                    // Call the function
+                    saveToGoogleCalendar();
+                });
+                
+                // Also handle touch events specifically for mobile
+                rsvpButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    saveToGoogleCalendar();
                 });
             }
             
-            // Directions button click effect
+            // Directions button click effect and functionality
             const directionsButton = document.querySelector('.directions-button');
             if (directionsButton) {
-                directionsButton.addEventListener('click', function() {
+                // Remove onclick attribute and add proper event listener
+                directionsButton.removeAttribute('onclick');
+                directionsButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
                     // Add click effect
                     this.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         this.style.transform = 'translateY(-3px)';
                     }, 150);
+                    
+                    // Call the function
+                    openDirections();
+                });
+                
+                // Also handle touch events specifically for mobile
+                directionsButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openDirections();
+                });
+            }
+            
+            // Copy event details button
+            const copyButton = document.querySelector('.copy-details-btn');
+            if (copyButton) {
+                copyButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Add click effect
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-3px)';
+                    }, 150);
+                    
+                    // Call the function
+                    showEventDetails();
+                });
+                
+                // Also handle touch events specifically for mobile
+                copyButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showEventDetails();
                 });
             }
         });
