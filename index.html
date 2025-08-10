@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Birthday Invitation</title>
+    <meta property="og:title" content="Anvisha's Birthday Celebration" />
+    <meta property="og:description" content="Join us for Anvisha's 1st birthday celebration!" />
+    <meta property="og:image" content="invitation.png" />
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
         * {
@@ -408,6 +411,36 @@
             animation: musicRotate 2s linear infinite;
         }
 
+        .pause-btn {
+            position: fixed;
+            top: 20px;
+            right: 80px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            color: #333;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: musicPulse 2s ease-in-out infinite;
+            max-width: calc(100vw - 40px);
+            max-height: calc(100vh - 40px);
+        }
+
+        .pause-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .pause-btn.paused {
+            background: linear-gradient(135deg, #ff6b6b, #ffa502);
+            animation: musicRotate 2s linear infinite;
+        }
+
         .music-prompt {
             position: fixed;
             top: 80px;
@@ -440,6 +473,14 @@
                 font-size: 1.3rem;
             }
             
+            .pause-btn {
+                top: 15px;
+                right: 70px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
             .music-prompt {
                 top: 70px;
                 right: 15px;
@@ -457,6 +498,14 @@
                 font-size: 1.2rem;
             }
             
+            .pause-btn {
+                top: 10px;
+                right: 60px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
             .music-prompt {
                 top: 60px;
                 right: 10px;
@@ -469,6 +518,14 @@
             .music-btn {
                 top: 8px;
                 right: 8px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
+            .pause-btn {
+                top: 8px;
+                right: 53px;
                 width: 35px;
                 height: 35px;
                 font-size: 1.1rem;
@@ -956,6 +1013,9 @@
         <!-- Music Control Button -->
         <button id="musicBtn" class="music-btn" onclick="toggleMusic()">🎵</button>
         
+        <!-- Slideshow Pause/Resume Button -->
+        <button id="pauseBtn" class="pause-btn" onclick="toggleSlideshow()">⏸️</button>
+        
         <!-- Music Start Prompt -->
         <div id="musicPrompt" class="music-prompt">
             <span>🎵 Click to start music!</span>
@@ -983,7 +1043,7 @@
             <div class="slide active">
                 <div class="slide-content">
                     <div class="birthday-icon">🎂</div>
-                    <h1 class="slide-title">Welcome to Anvisha's</h1>
+                    <h1 class="slide-title">Invitation to Anvisha's</h1>
                     <h2 class="slide-title">Birthday Celebration! </h2>
                     <h2 style="font-size: 2rem;">🎉</h2>
                     <p class="slide-text">Join us for a magical day filled with joy, laughter, and wonderful memories! ✨</p>
@@ -1106,6 +1166,14 @@
             if (autoPlayInterval) {
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = null;
+                console.log('Auto-play paused');
+                
+                // Add visual indicator that slideshow is paused
+                const container = document.querySelector('.invitation-container');
+                if (container) {
+                    container.style.border = '3px solid #ff6b6b';
+                    container.style.boxShadow = '0 20px 60px rgba(255, 107, 107, 0.4)';
+                }
             }
         }
 
@@ -1113,6 +1181,14 @@
         function resumeAutoPlay() {
             if (!autoPlayInterval) {
                 startAutoPlay();
+                console.log('Auto-play resumed');
+                
+                // Remove visual indicator
+                const container = document.querySelector('.invitation-container');
+                if (container) {
+                    container.style.border = '';
+                    container.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.2)';
+                }
             }
         }
 
@@ -1132,33 +1208,42 @@
             let touchStartTime = 0;
             let touchHoldTimer = null;
             let isPaused = false;
+            let autoPlayWasRunning = false;
 
-            document.addEventListener('touchstart', (e) => {
+            // Get the slideshow container
+            const slidesContainer = document.querySelector('.slides-container');
+            const invitationContainer = document.querySelector('.invitation-container');
+
+            // Add touch events to the main container
+            invitationContainer.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevent default touch behavior
                 touchStartX = e.changedTouches[0].screenX;
                 touchStartTime = Date.now();
                 
-                // Pause slideshow on touch start
-                if (!isPaused) {
+                // Check if auto-play is currently running
+                if (autoPlayInterval) {
+                    autoPlayWasRunning = true;
                     pauseAutoPlay();
-                    isPaused = true;
+                    console.log('Slideshow paused on touch');
+                } else {
+                    autoPlayWasRunning = false;
                 }
                 
                 // Set a timer to detect long press (hold)
                 touchHoldTimer = setTimeout(() => {
-                    // Keep slideshow paused for long press
-                    console.log('Touch held - slideshow paused');
-                }, 200); // 200ms threshold for hold detection
-            });
+                    console.log('Touch held - slideshow remains paused');
+                }, 300); // 300ms threshold for hold detection
+            }, { passive: false });
 
-            document.addEventListener('touchmove', (e) => {
+            invitationContainer.addEventListener('touchmove', (e) => {
                 // If user moves finger, reset hold timer
                 if (touchHoldTimer) {
                     clearTimeout(touchHoldTimer);
                     touchHoldTimer = null;
                 }
-            });
+            }, { passive: false });
 
-            document.addEventListener('touchend', (e) => {
+            invitationContainer.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
                 
                 // Clear hold timer
@@ -1167,16 +1252,16 @@
                     touchHoldTimer = null;
                 }
                 
-                // Resume slideshow after touch ends
-                if (isPaused) {
+                // Resume slideshow after touch ends (only if it was running before)
+                if (autoPlayWasRunning) {
                     setTimeout(() => {
                         resumeAutoPlay();
-                        isPaused = false;
-                    }, 500); // Small delay before resuming
+                        console.log('Slideshow resumed after touch');
+                    }, 800); // Longer delay before resuming
                 }
                 
                 handleSwipe();
-            });
+            }, { passive: false });
 
             function handleSwipe() {
                 const swipeThreshold = 50;
@@ -1263,6 +1348,23 @@ Description: Join us for Anvisha's 1st birthday celebration! 🎉`;
                 musicBtn.classList.remove('playing');
                 musicBtn.innerHTML = '🎵';
                 musicPrompt.classList.remove('hidden');
+            }
+        }
+
+        // Function to toggle slideshow pause/resume
+        function toggleSlideshow() {
+            const pauseBtn = document.getElementById('pauseBtn');
+            
+            if (autoPlayInterval) {
+                // Currently playing, so pause it
+                pauseAutoPlay();
+                pauseBtn.innerHTML = '▶️';
+                pauseBtn.classList.add('paused');
+            } else {
+                // Currently paused, so resume it
+                resumeAutoPlay();
+                pauseBtn.innerHTML = '⏸️';
+                pauseBtn.classList.remove('paused');
             }
         }
 
