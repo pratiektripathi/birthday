@@ -1101,6 +1101,21 @@
             startAutoPlay();
         }
 
+        // Pause auto-play functionality
+        function pauseAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        // Resume auto-play functionality
+        function resumeAutoPlay() {
+            if (!autoPlayInterval) {
+                startAutoPlay();
+            }
+        }
+
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
             initSlideshow();
@@ -1111,16 +1126,55 @@
                 if (e.key === 'ArrowRight') changeSlide(1);
             });
 
-            // Touch/swipe navigation
+            // Touch/swipe navigation with pause on hold
             let touchStartX = 0;
             let touchEndX = 0;
+            let touchStartTime = 0;
+            let touchHoldTimer = null;
+            let isPaused = false;
 
             document.addEventListener('touchstart', (e) => {
                 touchStartX = e.changedTouches[0].screenX;
+                touchStartTime = Date.now();
+                
+                // Pause slideshow on touch start
+                if (!isPaused) {
+                    pauseAutoPlay();
+                    isPaused = true;
+                }
+                
+                // Set a timer to detect long press (hold)
+                touchHoldTimer = setTimeout(() => {
+                    // Keep slideshow paused for long press
+                    console.log('Touch held - slideshow paused');
+                }, 200); // 200ms threshold for hold detection
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                // If user moves finger, reset hold timer
+                if (touchHoldTimer) {
+                    clearTimeout(touchHoldTimer);
+                    touchHoldTimer = null;
+                }
             });
 
             document.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
+                
+                // Clear hold timer
+                if (touchHoldTimer) {
+                    clearTimeout(touchHoldTimer);
+                    touchHoldTimer = null;
+                }
+                
+                // Resume slideshow after touch ends
+                if (isPaused) {
+                    setTimeout(() => {
+                        resumeAutoPlay();
+                        isPaused = false;
+                    }, 500); // Small delay before resuming
+                }
+                
                 handleSwipe();
             });
 
