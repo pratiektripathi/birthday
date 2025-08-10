@@ -1026,7 +1026,7 @@
         
         <!-- Music Start Prompt -->
         <div id="musicPrompt" class="music-prompt">
-            <span>🎵 Click to start music!</span>
+            <span>🎵 Touch anywhere to start music!</span>
         </div>
         
         <div class="invitation-container">
@@ -1209,6 +1209,29 @@
                 if (e.key === 'ArrowLeft') changeSlide(-1);
                 if (e.key === 'ArrowRight') changeSlide(1);
             });
+
+            // Touch anywhere on the main container to start music
+            const appContainer = document.querySelector('.app-container');
+            if (appContainer) {
+                appContainer.addEventListener('touchstart', function(e) {
+                    // Don't start music if touching music controls or buttons
+                    if (e.target.closest('#musicBtn') || e.target.closest('#pauseBtn') || 
+                        e.target.closest('.rsvp-button') || e.target.closest('.directions-button') || 
+                        e.target.closest('.copy-details-btn') || e.target.closest('.slide-nav')) {
+                        return;
+                    }
+                    
+                    if (!musicStarted) {
+                        startMusic();
+                    } else {
+                        // If music is already playing, ensure it continues
+                        const music = document.getElementById('bgMusic');
+                        if (music.paused) {
+                            music.play();
+                        }
+                    }
+                }, { passive: true });
+            }
 
             // Touch/swipe navigation with pause on hold
             let touchStartX = 0;
@@ -1564,11 +1587,39 @@ Description: Join us for Anvisha's 1st birthday celebration! 🎉`;
             }
         }, { once: true });
 
-        document.addEventListener('touchstart', function() {
+        // Touch anywhere to start music
+        document.addEventListener('touchstart', function(e) {
+            // Don't start music if touching music controls or buttons
+            if (e.target.closest('#musicBtn') || e.target.closest('#pauseBtn') || 
+                e.target.closest('.rsvp-button') || e.target.closest('.directions-button') || 
+                e.target.closest('.copy-details-btn') || e.target.closest('.slide-nav')) {
+                return;
+            }
+            
+            if (!musicStarted) {
+                startMusic();
+            } else {
+                // If music is already playing, ensure it continues
+                const music = document.getElementById('bgMusic');
+                if (music.paused) {
+                    music.play();
+                }
+            }
+        }, { passive: true });
+
+        // Additional touch event for better mobile support
+        document.addEventListener('touchend', function(e) {
+            // Don't handle if touching music controls or buttons
+            if (e.target.closest('#musicBtn') || e.target.closest('#pauseBtn') || 
+                e.target.closest('.rsvp-button') || e.target.closest('.directions-button') || 
+                e.target.closest('.copy-details-btn') || e.target.closest('.slide-nav')) {
+                return;
+            }
+            
             if (!musicStarted) {
                 startMusic();
             }
-        }, { once: true });
+        }, { passive: true });
 
         // Fallback: play music when user first interacts with the page
         let musicStarted = false;
