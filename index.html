@@ -441,6 +441,31 @@
             animation: musicRotate 2s linear infinite;
         }
 
+        .test-btn {
+            position: fixed;
+            top: 20px;
+            right: 140px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            color: #333;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: musicPulse 2s ease-in-out infinite;
+            max-width: calc(100vw - 40px);
+            max-height: calc(100vh - 40px);
+        }
+
+        .test-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
         .music-prompt {
             position: fixed;
             top: 80px;
@@ -481,6 +506,14 @@
                 font-size: 1.3rem;
             }
             
+            .test-btn {
+                top: 15px;
+                right: 125px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
             .music-prompt {
                 top: 70px;
                 right: 15px;
@@ -506,6 +539,14 @@
                 font-size: 1.2rem;
             }
             
+            .test-btn {
+                top: 10px;
+                right: 110px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
             .music-prompt {
                 top: 60px;
                 right: 10px;
@@ -526,6 +567,14 @@
             .pause-btn {
                 top: 8px;
                 right: 53px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+            
+            .test-btn {
+                top: 8px;
+                right: 98px;
                 width: 35px;
                 height: 35px;
                 font-size: 1.1rem;
@@ -1016,6 +1065,9 @@
         <!-- Slideshow Pause/Resume Button -->
         <button id="pauseBtn" class="pause-btn" onclick="toggleSlideshow()">⏸️</button>
         
+        <!-- Test Button -->
+        <button id="testBtn" class="test-btn" onclick="testButton()">🧪</button>
+        
         <!-- Music Start Prompt -->
         <div id="musicPrompt" class="music-prompt">
             <span>🎵 Click to start music!</span>
@@ -1277,25 +1329,52 @@
             }
         });
 
-        // Add click effect to RSVP button and Google Calendar integration
-        document.querySelector('.rsvp-button').addEventListener('click', function() {
-            // Add click effect
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'translateY(-3px)';
-            }, 150);
+        // Add click effects to buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // RSVP button click effect
+            const rsvpButton = document.querySelector('.rsvp-button');
+            if (rsvpButton) {
+                rsvpButton.addEventListener('click', function() {
+                    // Add click effect
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-3px)';
+                    }, 150);
+                });
+            }
             
-            // Call Google Calendar function
-            saveToGoogleCalendar();
+            // Directions button click effect
+            const directionsButton = document.querySelector('.directions-button');
+            if (directionsButton) {
+                directionsButton.addEventListener('click', function() {
+                    // Add click effect
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-3px)';
+                    }, 150);
+                });
+            }
         });
 
         // Function to save event to Google Calendar
         function saveToGoogleCalendar() {
-            // Use the working Google Calendar URL provided by user
-            const calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Anvisha%27s+Birthday+Celebration&dates=20250821T123000Z/20250821T143000Z&details=Join+us+for+Anvisha%27s+1st+birthday+celebration!&location=Society+Dharamshala+Pandu+Nagar';
-            
-            // Open Google Calendar directly
-            window.open(calendarUrl, '_blank');
+            try {
+                console.log('Opening Google Calendar...');
+                // Use the working Google Calendar URL provided by user
+                const calendarUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=Anvisha%27s+Birthday+Celebration&dates=20250821T123000Z/20250821T143000Z&details=Join+us+for+Anvisha%27s+1st+birthday+celebration!&location=Society+Dharamshala+Pandu+Nagar';
+                
+                // Open Google Calendar directly
+                const newWindow = window.open(calendarUrl, '_blank');
+                if (newWindow) {
+                    console.log('Google Calendar opened successfully');
+                } else {
+                    console.log('Popup blocked - please allow popups for this site');
+                    alert('Please allow popups for this site to open Google Calendar');
+                }
+            } catch (error) {
+                console.error('Error opening Google Calendar:', error);
+                alert('Error opening Google Calendar. Please try again.');
+            }
         }
 
         // Function to open Google Calendar with proper format
@@ -1309,27 +1388,72 @@
 
         // Function to show event details for manual copying
         function showEventDetails() {
-            const eventDetails = `Event: Anvisha's Birthday Celebration
+            try {
+                console.log('Copying event details to clipboard...');
+                const eventDetails = `Event: Anvisha's Birthday Celebration
 Date: August 21, 2025
 Time: 6:00 PM - 8:00 PM
 Location: Society Dharamshala Pandu Nagar
 Description: Join us for Anvisha's 1st birthday celebration! 🎉`;
 
-            // Create a temporary textarea to copy the text
-            const textarea = document.createElement('textarea');
-            textarea.value = eventDetails;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
+                // Try modern clipboard API first
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(eventDetails).then(() => {
+                        console.log('Event details copied successfully using clipboard API');
+                        alert('📋 Event details copied to clipboard!\n\nYou can now paste them into your calendar app or manually create the event. 🎉');
+                    }).catch(err => {
+                        console.error('Clipboard API failed, trying fallback method:', err);
+                        fallbackCopy();
+                    });
+                } else {
+                    // Fallback for older browsers
+                    fallbackCopy();
+                }
 
-            alert('📋 Event details copied to clipboard!\n\nYou can now paste them into your calendar app or manually create the event. 🎉');
+                function fallbackCopy() {
+                    // Create a temporary textarea to copy the text
+                    const textarea = document.createElement('textarea');
+                    textarea.value = eventDetails;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        console.log('Event details copied successfully using fallback method');
+                        alert('📋 Event details copied to clipboard!\n\nYou can now paste them into your calendar app or manually create the event. 🎉');
+                    } catch (err) {
+                        console.error('Fallback copy failed:', err);
+                        alert('📋 Copy failed. Here are the event details:\n\n' + eventDetails);
+                    } finally {
+                        document.body.removeChild(textarea);
+                    }
+                }
+            } catch (error) {
+                console.error('Error copying event details:', error);
+                alert('Error copying event details. Please try again.');
+            }
         }
 
         // Function to open Google Maps directions
         function openDirections() {
-            const directionsUrl = 'https://maps.app.goo.gl/AAqEcMm8qz5iaiVz8';
-            window.open(directionsUrl, '_blank');
+            try {
+                console.log('Opening Google Maps directions...');
+                const directionsUrl = 'https://maps.app.goo.gl/AAqEcMm8qz5iaiVz8';
+                
+                // Open Google Maps directions
+                const newWindow = window.open(directionsUrl, '_blank');
+                if (newWindow) {
+                    console.log('Google Maps opened successfully');
+                } else {
+                    console.log('Popup blocked - please allow popups for this site');
+                    alert('Please allow popups for this site to open Google Maps');
+                }
+            } catch (error) {
+                console.error('Error opening Google Maps:', error);
+                alert('Error opening Google Maps. Please try again.');
+            }
         }
 
         // Function to toggle background music
@@ -1366,6 +1490,12 @@ Description: Join us for Anvisha's 1st birthday celebration! 🎉`;
                 pauseBtn.innerHTML = '⏸️';
                 pauseBtn.classList.remove('paused');
             }
+        }
+
+        // Test function to verify buttons are working
+        function testButton() {
+            console.log('Button clicked! Function is working.');
+            alert('✅ Button is working! Function called successfully.');
         }
 
         // Function to start music and hide prompt
